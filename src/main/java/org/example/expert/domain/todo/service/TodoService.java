@@ -57,18 +57,7 @@ public class TodoService {
 
     public Page<TodoResponse> getTodos(int page, int size, String weather, LocalDateTime start, LocalDateTime end) {
         Pageable pageable = PageRequest.of(page - 1, size);
-
-        Page<Todo> todos;
-
-        if (weather != null && start != null && end != null) {
-            todos = todoRepository.searchByWeatherAndPeriod(weather, start, end, pageable);
-        } else if (weather != null) {
-            todos = todoRepository.searchByWeather(weather, pageable);
-        } else if (start != null && end != null) {
-            todos = todoRepository.searchByPeriod(start, end, pageable);
-        } else {
-            todos = todoRepository.findAllTodos(pageable);
-        }
+        Page<Todo> todos = todoRepository.search(weather, start, end, pageable);
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
@@ -80,6 +69,7 @@ public class TodoService {
                 todo.getModifiedAt()
         ));
     }
+
 
     public TodoResponse getTodo(long todoId) {
         Todo todo = todoRepository.findByIdWithUser(todoId)
