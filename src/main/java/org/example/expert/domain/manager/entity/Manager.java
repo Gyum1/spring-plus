@@ -16,14 +16,20 @@ public class Manager {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) // 일정 만든 사람 id
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY) // 일정 id
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 
+    // ✅ 생성자 완전체 (user, todo 받는 형태)
     public Manager(User user, Todo todo) {
         this.user = user;
+        this.todo = todo;
+    }
+
+    public void setTodo(Todo todo) {
         this.todo = todo;
     }
 }

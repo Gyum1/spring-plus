@@ -19,6 +19,7 @@ public class Todo extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String contents;
     private String weather;
@@ -30,7 +31,8 @@ public class Todo extends Timestamped {
     @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "todo")
+    // cascade 적용 (담당자 자동 저장)
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Manager> managers = new ArrayList<>();
 
     public Todo(String title, String contents, String weather, User user) {
@@ -38,6 +40,11 @@ public class Todo extends Timestamped {
         this.contents = contents;
         this.weather = weather;
         this.user = user;
-        this.managers.add(new Manager(user, this));
+    }
+
+    // 연관관계 편의 메서드
+    public void addManager(Manager manager) {
+        this.managers.add(manager);
+        manager.setTodo(this);
     }
 }
